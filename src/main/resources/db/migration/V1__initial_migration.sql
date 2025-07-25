@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS public.products
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name character varying(255) COLLATE pg_catalog."default" NOT NULL,
     price decimal(10,2) NOT NULL,
-    description TEXT NOT NULL
+    description TEXT NOT NULL,
     category_id smallint NOT NULL,
     CONSTRAINT products_categories_id_fk FOREIGN KEY (category_id)
         REFERENCES public.categories (id) MATCH SIMPLE
