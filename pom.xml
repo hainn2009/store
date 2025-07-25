@@ -137,7 +137,7 @@
 					<compilerArgs>
 						<arg>-parameters</arg>
 					</compilerArgs>
-					<release>21</release>
+					<release>24</release>
 				</configuration>
 			</plugin>
 		</plugins>
