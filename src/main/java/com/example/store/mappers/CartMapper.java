@@ -10,7 +10,7 @@ import com.example.store.entities.CartItem;
 
 @Mapper(componentModel = "spring")
 public interface CartMapper {
-    @Mapping(target = "items", source = "items")
+    @Mapping(target = "totalPrice", expression = "java(cart.getTotalPrice())")
     CartDto toDto(Cart cart);
 
     @Mapping(target = "totalPrice", expression = "java(cartItem.getTotalPrice())")
