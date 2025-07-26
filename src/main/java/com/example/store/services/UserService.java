@@ -1,5 +1,10 @@
 package com.example.store.services;
 
+import java.util.Collections;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.store.entities.Address;
@@ -15,13 +20,21 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final EntityManager entityManager;
     private final ProfileRepository profileRepository;
     private final AddressRepository addressRepository;
     private final ProductRepository productRepository;
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return new org.springframework.security.core.userdetails.User(
+            user.getEmail(), user.getPassword(), Collections.emptyList());
+    }
+
+    // Need to check if we need these methods
     @Transactional
     public void showEntityStates() {
         var user = User.builder().name("Hai").email("hainn2009@gmail.com").password("123456").build();

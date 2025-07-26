@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.example.store.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    @EntityGraph(attributePaths = { "tags", "addresses" })
+    @EntityGraph(attributePaths = { "addresses" })
     Optional<User> findByEmail(String email);
 
     @EntityGraph(attributePaths = { "addresses" })

@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS public.cart_items
         REFERENCES public.carts (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
-    CONSTRAINT user_tags_product_id_fk FOREIGN KEY (product_id)
+    CONSTRAINT cart_items_product_id_fk FOREIGN KEY (product_id)
         REFERENCES public.products (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
