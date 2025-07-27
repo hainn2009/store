@@ -48,7 +48,7 @@ public class JwtService {
         //     .getBody();
     }
 
-    public String getEmailFromToken(@RequestHeader String token) {
+    public String getEmailFromToken(String token) {
         return getClaim(token).getSubject();
     }
 }
