@@ -20,6 +20,8 @@ import com.example.store.mappers.UserMapper;
 import com.example.store.repositories.UserRepository;
 import com.example.store.services.JwtService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -33,7 +35,9 @@ public class AuthController {
     private final UserMapper userMapper;
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<JwtResponse> login(
+        @Valid @RequestBody LoginRequest request,
+        HttpServletResponse response) {
         // var user =userRepository.findByEmail(request.getEmail()).orElse(null);
         // if (user == null) {
         //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -49,9 +53,17 @@ public class AuthController {
 
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
 
-        var token = jwtService.generateToken(user);
+        var accessToken = jwtService.generateAccessToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        var cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setMaxAge(60 * 60 * 24 * 7); // 7 days
+        cookie.setSecure(true); // https
+        cookie.setHttpOnly(true);
+        cookie.setPath("/auth/refresh");
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(new JwtResponse(accessToken));
     }
 
     // @PostMapping("/validate")
