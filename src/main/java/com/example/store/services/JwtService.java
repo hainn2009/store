@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.example.store.entities.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -16,14 +18,17 @@ public class JwtService {
     @Value("${spring.jwt.secret}")
     private String secret;
 
-    public String generateToken(String email) {
+    public String generateToken(User user) {
         final long tokenExpiration = 1000 * 60 * 60; // 1 hour
 
-        return Jwts.builder().subject(email)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + tokenExpiration))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
-                .compact();
+        return Jwts.builder()
+            .subject(user.getId().toString())
+            .claim("email", user.getEmail())
+            .claim("name", user.getName())
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + tokenExpiration))
+            .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+            .compact();
     }
 
     public boolean validateToken(String token) {
@@ -48,7 +53,7 @@ public class JwtService {
         //     .getBody();
     }
 
-    public String getEmailFromToken(String token) {
-        return getClaim(token).getSubject();
+    public Long getUserIdFromToken(String token) {
+        return Long.valueOf(getClaim(token).getSubject());
     }
 }
