@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.store.dtos.CheckoutRequest;
 import com.example.store.dtos.CheckoutResponse;
+import com.example.store.dtos.ErrorDto;
 import com.example.store.entities.Order;
 import com.example.store.entities.OrderItem;
 import com.example.store.entities.OrderStatus;
@@ -34,11 +35,11 @@ public class CheckoutController {
     public ResponseEntity<?> checkout(@Valid @RequestBody CheckoutRequest request) {
         var cart = cartRepository.getCartWithItems(request.getCartId()).orElse(null);
         if (cart == null) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Cart not found"));
+            return ResponseEntity.badRequest().body(new ErrorDto("Cart not found"));
         }
 
         if (cart.getItems().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Cart is empty"));
+            return ResponseEntity.badRequest().body(new ErrorDto("Cart is empty"));
         }
 
         var order = new Order();
