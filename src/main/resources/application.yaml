@@ -11,5 +11,5 @@ spring:
     #   ddl-auto: none
   jwt:
    secret: ${JWT_SECRET}
-   accessTokenExpiration: 900 # 15 minutes (900 seconds)
+   accessTokenExpiration: 7200 # 15 minutes (900 seconds)
    refreshTokenExpiration: 604800 # 7 days

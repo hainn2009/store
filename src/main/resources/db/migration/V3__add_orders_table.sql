@@ -16,7 +16,7 @@ CREATE TABLE public.orders
 ALTER TABLE IF EXISTS public.orders
     OWNER to postgres;
 
-CREATE TABLE public.orders_items
+CREATE TABLE public.order_items
 (
     id bigint GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
     order_id bigint NOT NULL,
@@ -33,3 +33,6 @@ CREATE TABLE public.orders_items
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
+
+ALTER TABLE IF EXISTS public.order_items
+    OWNER to postgres;
