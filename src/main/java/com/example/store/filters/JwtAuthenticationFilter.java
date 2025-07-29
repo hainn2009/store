@@ -34,19 +34,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         var token = authHeader.replace("Bearer ", "");
-
-        if (!jwtService.validateToken(token)) {
+        var jwt = jwtService.parseToken(token);
+        if (jwt == null || jwt.isExpired()) {
             filterChain.doFilter(request, response);
             return;
         };
 
-        var userId = jwtService.getUserIdFromToken(token);
-        var role = jwtService.getRoleFromToken(token);
         // create authentication token
         var authentication = new UsernamePasswordAuthenticationToken(
-                userId,
+                jwt.getUserId(),
                 null, // because we are validating so don't have username and password
-                List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                List.of(new SimpleGrantedAuthority("ROLE_" + jwt.getRole()))
         );
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

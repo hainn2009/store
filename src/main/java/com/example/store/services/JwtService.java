@@ -12,65 +12,46 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class JwtService {
-    @Value("${spring.jwt.secret}")
-    private String secret;
+    private final JwtConfig jwtConfig;
 
-    @Value("${spring.jwt.accessTokenExpiration}")
-    private Integer accessTokenExpiration;
-
-    @Value("${spring.jwt.refreshTokenExpiration}")
-    private Integer refreshTokenExpiration;
-
-    public String generateAccessToken(User user) {
-        return generateToken(user, accessTokenExpiration * 1000);
+    public Jwt generateAccessToken(User user) {
+        return generateToken(user, jwtConfig.getAccessTokenExpiration());
     }
 
-    public String generateRefreshToken(User user) {
-        return generateToken(user, refreshTokenExpiration * 1000);
+    public Jwt generateRefreshToken(User user) {
+        return generateToken(user, jwtConfig.getRefreshTokenExpiration());
     }
 
-    private String generateToken(User user, final long tokenExpiration) {
-        return Jwts.builder()
+    private Jwt generateToken(User user, final long tokenExpiration) {
+        var claims = Jwts.claims()
             .subject(user.getId().toString())
-            .claim("email", user.getEmail())
-            .claim("name", user.getName())
-            .claim("role", user.getRole())
+            .add("email", user.getEmail())
+            .add("name", user.getName())
+            .add("role", user.getRole())
             .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + tokenExpiration))
-            .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
-            .compact();
+            .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
+            .build();
+
+        return new Jwt(claims, jwtConfig.getSecretKey());
     }
 
-    public boolean validateToken(String token) {
+    public Jwt parseToken(String token) {
         try {
-            var claims = getClaim(token);
-
-            return claims.getExpiration().after(new Date());
+            return new Jwt(getClaim(token), jwtConfig.getSecretKey());
         } catch (JwtException e) {
-            System.out.println(e.getMessage());
-            return false;
+            return null;
         }
     }
 
     private Claims getClaim(String token) {
         return Jwts
-                .parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parseSignedClaims(token)
+                .parser().verifyWith(jwtConfig.getSecretKey()).build().parseSignedClaims(token)
                 .getPayload();
-        // return Jwts.parserBuilder()
-        //     .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
-        //     .build()
-        //     .parseClaimsJws(token)
-        //     .getBody();
     }
 
-    public Long getUserIdFromToken(String token) {
-        return Long.valueOf(getClaim(token).getSubject());
-    }
-
-    public Role getRoleFromToken(String token) {
-        return Role.valueOf(getClaim(token).get("role", String.class));
-    }
 }
