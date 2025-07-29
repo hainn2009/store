@@ -4,8 +4,8 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.example.store.entities.Role;
 import com.example.store.entities.User;
 
 import io.jsonwebtoken.Claims;
@@ -18,16 +18,18 @@ public class JwtService {
     @Value("${spring.jwt.secret}")
     private String secret;
 
-    public String generateAccessToken(User user) {
-        final long tokenExpiration = 1000 * 60 * 5; // 5 minutes
+    @Value("${spring.jwt.accessTokenExpiration}")
+    private Integer accessTokenExpiration;
 
-        return generateToken(user, tokenExpiration);
+    @Value("${spring.jwt.refreshTokenExpiration}")
+    private Integer refreshTokenExpiration;
+
+    public String generateAccessToken(User user) {
+        return generateToken(user, accessTokenExpiration * 1000);
     }
 
     public String generateRefreshToken(User user) {
-        final long tokenExpiration = 1000 * 60 * 60 * 24 * 7; // 7 days
-
-        return generateToken(user, tokenExpiration);
+        return generateToken(user, refreshTokenExpiration * 1000);
     }
 
     private String generateToken(User user, final long tokenExpiration) {
@@ -35,6 +37,7 @@ public class JwtService {
             .subject(user.getId().toString())
             .claim("email", user.getEmail())
             .claim("name", user.getName())
+            .claim("role", user.getRole())
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + tokenExpiration))
             .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
@@ -65,5 +68,9 @@ public class JwtService {
 
     public Long getUserIdFromToken(String token) {
         return Long.valueOf(getClaim(token).getSubject());
+    }
+
+    public Role getRoleFromToken(String token) {
+        return Role.valueOf(getClaim(token).get("role", String.class));
     }
 }

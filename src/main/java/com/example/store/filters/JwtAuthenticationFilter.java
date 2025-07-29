@@ -1,9 +1,11 @@
 package com.example.store.filters;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -38,10 +40,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         };
 
+        var userId = jwtService.getUserIdFromToken(token);
+        var role = jwtService.getRoleFromToken(token);
+        // create authentication token
         var authentication = new UsernamePasswordAuthenticationToken(
-                jwtService.getUserIdFromToken(token),
+                userId,
                 null, // because we are validating so don't have username and password
-                null
+                List.of(new SimpleGrantedAuthority("ROLE_" + role))
         );
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
