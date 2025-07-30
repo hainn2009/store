@@ -1,6 +1,5 @@
 package com.example.store.controllers;
 
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -36,8 +35,7 @@ public class CartController {
 
     @PostMapping
     public ResponseEntity<CartDto> createCart(
-        UriComponentsBuilder uriBuilder
-    ) {
+            UriComponentsBuilder uriBuilder) {
         var cartDto = cartService.createCart();
 
         var uri = uriBuilder.path("/carts/{id}").buildAndExpand(cartDto.getId()).toUri();

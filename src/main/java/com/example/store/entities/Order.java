@@ -46,4 +46,8 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private Set<OrderItem> items = new LinkedHashSet<>();
+
+    public boolean isPlacedBy(User customer) {
+        return this.customer == customer;
+    }
 }
