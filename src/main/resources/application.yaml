@@ -13,3 +13,6 @@ spring:
    secret: ${JWT_SECRET}
    accessTokenExpiration: 7200 # 15 minutes (900 seconds)
    refreshTokenExpiration: 604800 # 7 days
+stripe:
+  secretKey: ${STRIPE_SECRET_KEY}
+websiteUrl: http://localhost:3000
