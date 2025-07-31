@@ -44,7 +44,7 @@ public class Order {
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "order", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
     private Set<OrderItem> items = new LinkedHashSet<>();
 
     public boolean isPlacedBy(User customer) {
