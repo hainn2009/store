@@ -29,6 +29,7 @@ import lombok.AllArgsConstructor;
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -50,22 +51,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .csrf(c -> c.disable())
-            .authorizeHttpRequests(c -> c
-                .requestMatchers("/carts/**").permitAll()
-                .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-                .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
-                .anyRequest().authenticated())
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling(c -> {
-                c.authenticationEntryPoint(
-                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-                c.accessDeniedHandler((request, response, ex) -> response.setStatus(HttpStatus.FORBIDDEN.value()));
-            });
+                .csrf(c -> c.disable())
+                .authorizeHttpRequests(c -> c
+                        .requestMatchers("/carts/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/checkout/webhook").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(c -> {
+                    c.authenticationEntryPoint(
+                            new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                    c.accessDeniedHandler((request, response, ex) -> response.setStatus(HttpStatus.FORBIDDEN.value()));
+                });
 
-
-            return http.build();
+        return http.build();
     }
 }
