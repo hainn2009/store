@@ -31,7 +31,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         var user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new org.springframework.security.core.userdetails.User(
-            user.getEmail(), user.getPassword(), Collections.emptyList());
+                user.getEmail(), user.getPassword(), Collections.emptyList());
     }
 
     // Need to check if we need these methods
@@ -78,7 +78,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void deletedRelated() {
         var user = userRepository.findById(2L).orElseThrow();
-        var address = user.getAddresses().getFirst();
+        var address = user.getAddresses().get(0);
         user.removeAddress(address);
         userRepository.save(user);
     }
@@ -98,13 +98,14 @@ public class UserService implements UserDetailsService {
     }
 
     public void fetchProducts() {
-        // var products = productRepository.findProducts(BigDecimal.valueOf(10), BigDecimal.valueOf(500));
+        // var products = productRepository.findProducts(BigDecimal.valueOf(10),
+        // BigDecimal.valueOf(500));
         // products.forEach(System.out::println);
     }
 
     @Transactional
     public void fetchUser() {
-        var user = userRepository.findByEmail("hainn2009@gmail.com").orElseThrow() ;
+        var user = userRepository.findByEmail("hainn2009@gmail.com").orElseThrow();
         System.err.println(user);
     }
 
@@ -112,7 +113,8 @@ public class UserService implements UserDetailsService {
         var users = userRepository.findAllWithAddresses();
         users.forEach(user -> {
             System.out.println(user);
-            user.getAddresses().forEach(System.out::println);;
+            user.getAddresses().forEach(System.out::println);
+            ;
         });
     }
 }
