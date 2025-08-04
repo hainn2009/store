@@ -75,7 +75,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<scope>annotationProcessor</scope>
+			<!-- <scope>annotationProcessor</scope> -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -83,12 +83,12 @@
 			<artifactId>mapstruct</artifactId>
 			<version>1.6.3</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
 			<version>1.6.3</version>
 			<scope>annotationProcessor</scope>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>

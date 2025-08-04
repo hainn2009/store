@@ -75,6 +75,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    // TODO: to remove
     @Transactional
     public void deletedRelated() {
         var user = userRepository.findById(2L).orElseThrow();

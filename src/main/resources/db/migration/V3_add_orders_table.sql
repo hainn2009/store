@@ -7,14 +7,8 @@ CREATE TABLE public.orders
     total_price decimal (10,2) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT orders_users_fk FOREIGN KEY (customer_id)
-        REFERENCES public.users (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-        NOT VALID
+        REFERENCES public.users (id)
 );
-
-ALTER TABLE IF EXISTS public.orders
-    OWNER to postgres;
 
 CREATE TABLE public.order_items
 (
@@ -25,14 +19,7 @@ CREATE TABLE public.order_items
     quantity integer NOT NULL,
     total_price decimal (10,2) NOT NULL,
     CONSTRAINT order_items_orders_fk FOREIGN KEY (order_id)
-        REFERENCES public.orders (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        REFERENCES public.orders (id),
     CONSTRAINT order_items_products_fk FOREIGN KEY (product_id)
-        REFERENCES public.products (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        REFERENCES public.products (id)
 );
-
-ALTER TABLE IF EXISTS public.order_items
-    OWNER to postgres;
