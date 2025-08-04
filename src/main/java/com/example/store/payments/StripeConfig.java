@@ -1,4 +1,4 @@
-package com.example.store.config;
+package com.example.store.payments;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
