@@ -16,9 +16,8 @@ import com.example.store.dtos.ErrorDto;
 import com.example.store.exceptions.CartEmptyException;
 import com.example.store.exceptions.CartNotFoundException;
 import com.example.store.exceptions.PaymentException;
+import com.example.store.repositories.OrderRepository;
 import com.example.store.services.CheckoutService;
-import com.stripe.exception.SignatureVerificationException;
-import com.stripe.net.Webhook;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CheckoutController {
     private final CheckoutService checkoutService;
+    private final OrderRepository orderRepository;
 
     @Value("${stripe.webhookSecretKey}")
     private String webhookSecretKey;
@@ -42,25 +42,7 @@ public class CheckoutController {
     public ResponseEntity<Void> handleWebhook(
             @RequestHeader("Stripe-Signature") String signature,
             @RequestBody String payload) {
-        try {
-            var event = Webhook.constructEvent(payload, signature, webhookSecretKey);
-            System.out.println(event.getType());
-
-            var stripeObject = event.getDataObjectDeserializer().getObject().orElse(null);
-
-            switch (event.getType()) {
-                case "payment_intent.succeeded":
-                    System.out.println("Payment was successful!");
-                    break;
-                case "payment_intent.failed":
-                    System.out.println("Payment failed.");
-                    break;
-            }
-
-            return ResponseEntity.ok().build();
-        } catch (SignatureVerificationException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        checkoutService.handleWebhookEvent(signature, payload);
     }
 
     @ExceptionHandler(PaymentException.class)
