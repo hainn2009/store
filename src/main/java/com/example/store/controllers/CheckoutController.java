@@ -1,6 +1,7 @@
 package com.example.store.controllers;
 
-import org.springframework.beans.factory.annotation.Value;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,8 +17,8 @@ import com.example.store.dtos.ErrorDto;
 import com.example.store.exceptions.CartEmptyException;
 import com.example.store.exceptions.CartNotFoundException;
 import com.example.store.exceptions.PaymentException;
-import com.example.store.repositories.OrderRepository;
 import com.example.store.services.CheckoutService;
+import com.example.store.services.WebhookRequest;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CheckoutController {
     private final CheckoutService checkoutService;
-    private final OrderRepository orderRepository;
-
-    @Value("${stripe.webhookSecretKey}")
-    private String webhookSecretKey;
 
     @PostMapping
     public CheckoutResponse checkout(@Valid @RequestBody CheckoutRequest request) {
@@ -39,10 +36,10 @@ public class CheckoutController {
     }
 
     @PostMapping("/webhook")
-    public ResponseEntity<Void> handleWebhook(
-            @RequestHeader("Stripe-Signature") String signature,
+    public void handleWebhook(
+            @RequestHeader Map<String, String> headers,
             @RequestBody String payload) {
-        checkoutService.handleWebhookEvent(signature, payload);
+        checkoutService.handleWebhookEvent(new WebhookRequest(headers, payload));
     }
 
     @ExceptionHandler(PaymentException.class)

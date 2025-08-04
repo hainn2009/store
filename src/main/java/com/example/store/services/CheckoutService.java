@@ -1,6 +1,5 @@
 package com.example.store.services;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,15 +7,12 @@ import com.example.store.dtos.CheckoutRequest;
 import com.example.store.dtos.CheckoutResponse;
 import com.example.store.entities.Order;
 import com.example.store.entities.OrderItem;
-import com.example.store.entities.OrderStatus;
+import com.example.store.entities.PaymentStatus;
 import com.example.store.exceptions.CartEmptyException;
 import com.example.store.exceptions.CartNotFoundException;
 import com.example.store.exceptions.PaymentException;
 import com.example.store.repositories.CartRepository;
 import com.example.store.repositories.OrderRepository;
-import com.stripe.exception.SignatureVerificationException;
-import com.stripe.model.PaymentIntent;
-import com.stripe.net.Webhook;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +40,7 @@ public class CheckoutService {
 
         var order = new Order();
         order.setTotalPrice(cart.getTotalPrice());
-        order.setStatus(OrderStatus.PENDING);
+        order.setStatus(PaymentStatus.PENDING);
         order.setCustomer(authService.getCurrentUser());
 
         cart.getItems().forEach(item -> {
@@ -71,32 +67,13 @@ public class CheckoutService {
         }
     }
 
-    public Void handleWebhookEvent(String signature, String payload) {
-        try {
-            var event = Webhook.constructEvent(payload, signature, webhookSecretKey);
-            System.out.println(event.getType());
+    public void handleWebhookEvent(WebhookRequest request) {
+        paymentGateway.parseWebhookRequest(request)
+                .ifPresent(paymentResult -> {
+                    var order = orderRepository.findById(paymentResult.getOrderId()).orElseThrow();
+                    order.setStatus(paymentResult.getPaymentStatus());
+                    orderRepository.save(order);
+                });
 
-            var stripeObject = event.getDataObjectDeserializer().getObject().orElse(null);
-
-            switch (event.getType()) {
-                case "payment_intent.succeeded":
-                    System.out.println("toi o day");
-                    var paymentIntent = (PaymentIntent) stripeObject;
-                    if (paymentIntent != null) {
-                        var orderId = paymentIntent.getMetadata().get("order_id");
-                        var order = orderRepository.findById(Long.parseLong(orderId)).orElseThrow();
-                        order.setStatus(OrderStatus.PAID);
-                        orderRepository.save(order);
-                    }
-                    break;
-                case "payment_intent.failed":
-                    System.out.println("Payment failed.");
-                    break;
-            }
-
-            return ResponseEntity.ok().build();
-        } catch (SignatureVerificationException e) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 }
