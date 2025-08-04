@@ -10,9 +10,11 @@ spring:
     # hibernate:
     #   ddl-auto: none
   jwt:
-   secret: ${JWT_SECRET}
-   accessTokenExpiration: 7200 # 15 minutes (900 seconds)
-   refreshTokenExpiration: 604800 # 7 days
+    secret: ${JWT_SECRET}
+    accessTokenExpiration: 900 # 15 minutes (900 seconds)
+    refreshTokenExpiration: 604800 # 7 days
+  profiles:
+    active: dev
 stripe:
   secretKey: ${STRIPE_SECRET_KEY}
   webhookSecretKey: ${STRIPE_WEBHOOK_SECRET_KEY}

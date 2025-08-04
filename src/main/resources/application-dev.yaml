@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/store
+    username: postgres
+    password: postgres
+  jpa:
+    show-sql: true
+    # hibernate:
+    #   ddl-auto: none
+websiteUrl: http://localhost:3000
