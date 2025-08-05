@@ -3,15 +3,15 @@ package com.example.store.payments;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.store.entities.Order;
-import com.example.store.entities.OrderItem;
-import com.example.store.entities.PaymentStatus;
-import com.example.store.exceptions.CartEmptyException;
-import com.example.store.exceptions.CartNotFoundException;
-import com.example.store.repositories.CartRepository;
-import com.example.store.repositories.OrderRepository;
-import com.example.store.services.AuthService;
-import com.example.store.services.CartService;
+import com.example.store.auth.AuthService;
+import com.example.store.cart.CartEmptyException;
+import com.example.store.cart.CartNotFoundException;
+import com.example.store.cart.CartRepository;
+import com.example.store.cart.CartService;
+import com.example.store.orders.Order;
+import com.example.store.orders.OrderItem;
+import com.example.store.orders.OrderRepository;
+import com.example.store.orders.PaymentStatus;
 
 import lombok.RequiredArgsConstructor;
 

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.store.dtos.ErrorDto;
-import com.example.store.exceptions.CartEmptyException;
-import com.example.store.exceptions.CartNotFoundException;
+import com.example.store.cart.CartEmptyException;
+import com.example.store.cart.CartNotFoundException;
+import com.example.store.common.ErrorDto;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
