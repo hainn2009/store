@@ -109,7 +109,3 @@ CREATE TABLE IF NOT EXISTS public.order_items
     CONSTRAINT order_items_products_fk FOREIGN KEY (product_id)
         REFERENCES public.products (id)
 );
-
-----------------------
--- Create data
-----------------------
