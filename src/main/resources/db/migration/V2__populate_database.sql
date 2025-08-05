@@ -23,7 +23,7 @@ INSERT INTO public.products (name, price, description, category_id) VALUES
 ('iPhone 11', 399.00, 'Affordable iPhone with dual camera.', 1),
 
 -- Samsung Galaxy (category_id = 2)
-('Galaxy S24 Ultra', 1299.00, 'Samsung\'s most powerful phone with S Pen and quad cameras.', 2),
+('Galaxy S24 Ultra', 1299.00, 'Samsung''s most powerful phone with S Pen and quad cameras.', 2),
 ('Galaxy S24+', 999.00, 'Large AMOLED display with Snapdragon 8 Gen 3.', 2),
 ('Galaxy S24', 899.00, 'Flagship features in compact size.', 2),
 ('Galaxy Z Fold5', 1799.00, 'Premium foldable with multitasking features.', 2),
@@ -56,7 +56,7 @@ INSERT INTO public.products (name, price, description, category_id) VALUES
 ('Pixel 6 Pro', 799.00, 'Older flagship with large screen.', 4),
 ('Pixel 6', 499.00, 'Sleek design and AI features.', 4),
 ('Pixel 5a', 329.00, 'Compact Pixel with great battery life.', 4),
-('Pixel Fold', 1799.00, 'Google\'s first foldable phone.', 4),
+('Pixel Fold', 1799.00, 'Google''s first foldable phone.', 4),
 
 -- OnePlus (category_id = 5)
 ('OnePlus 12', 799.00, 'Latest flagship with top specs.', 5),
